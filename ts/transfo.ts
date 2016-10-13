@@ -56,12 +56,6 @@ export let drag =       ( element               : HTMLElement
                         , Pt_coord_parent       : SVGPoint
                         ) => {
 	// TO BE DONE
-    let M = originalMatrix,
-        P = Pt_coord_element,
-        Pp= Pt_coord_parent,
-        e = Pp.x - M.a*P.x - M.c*P.y,
-        f = Pp.y - M.b*P.x - M.d*P.y;
-    setMatrixCoordToElement(element, M.a, M.b, M.c, M.d, e, f);
 };
 
 //______________________________________________________________________________________________________________________
@@ -73,32 +67,5 @@ export let rotozoom =   ( element           : HTMLElement
                         , Pt2_coord_parent  : SVGPoint
                         ) => {
 	// TO BE DONE
-    let P1  = Pt1_coord_element,
-        P1p = Pt1_coord_parent,
-        P2  = Pt2_coord_element,
-        P2p = Pt2_coord_parent,
-        M   = originalMatrix,
-        c, s, e, f;
-
-    let dx  = P2.x  - P1.x,
-        dy  = P2.y  - P1.y,
-        dxp = P2p.x - P1p.x,
-        dyp = P2p.y - P1p.y;
-
-    if(dx === 0 && dy === 0) return;
-    if(dx === 0) {
-        s = -dxp/dy;
-        c =  dyp/dy;
-    } else if(dy === 0) {
-        s = dyp/dx;
-        c = dxp/dx;
-    } else {
-        s = (dyp/dy - dxp/dx) / (dy/dx + dx/dy);
-        c = (dyp - s*dx)/dy;
-    }
-    e = P1p.x - c*P1.x + s*P1.y;
-    f = P1p.y - s*P1.x - c*P1.y;
-
-    setMatrixCoordToElement(element, c, s, -s, c, e, f);
 };
 

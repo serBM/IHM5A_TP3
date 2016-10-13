@@ -14,7 +14,7 @@ function multiTouch(element: HTMLElement) : void {
             }
             return null;
         };
-    enum MT_STATES {Inactive, Translating, Rotozooming};
+    enum MT_STATES {Inactive, Translating, Rotozooming}
     let fsm = FSM.parse<MT_STATES>( {
         initialState: MT_STATES.Inactive,
         states: [MT_STATES.Inactive, MT_STATES.Translating, MT_STATES.Rotozooming],
@@ -24,12 +24,7 @@ function multiTouch(element: HTMLElement) : void {
                 eventName: ["touchstart"],
                 useCapture: false,
                 action: (evt : TouchEvent) : boolean => {
-                    let touch = evt.changedTouches.item(0);
-                    pointerId_1 = touch.identifier;
-                    // Get point coordinate with respect to element
-                    originalMatrix    = transfo.getMatrixFromElement( element );
-                    Pt1_coord_parent  = transfo.getPoint(touch.pageX, touch.pageY);
-                    Pt1_coord_element = Pt1_coord_parent.matrixTransform( originalMatrix.inverse() );
+                    // To be completed
                     return true;
                 }
             },
@@ -40,13 +35,8 @@ function multiTouch(element: HTMLElement) : void {
                 action: (evt : TouchEvent) : boolean => {
                     evt.preventDefault();
                     evt.stopPropagation();
-                    let touch = getRelevantDataFromEvent(evt);
-                    if(touch) {
-                        Pt1_coord_parent.x = touch.pageX;
-                        Pt1_coord_parent.y = touch.pageY;
-                        transfo.drag( element, originalMatrix, Pt1_coord_element, Pt1_coord_parent );
-                    }
-                    return touch !== null;
+                    // To be completed
+                    return true;
                 }
             },
             { from: MT_STATES.Translating,
@@ -55,8 +45,8 @@ function multiTouch(element: HTMLElement) : void {
                 eventName: ["touchend"],
                 useCapture: true,
                 action: (evt : TouchEvent) : boolean => {
-                    let touch = getRelevantDataFromEvent(evt);
-                    return touch !== null;
+                    // To be completed
+                    return true;
                 }
             },
             { from: MT_STATES.Translating, to: MT_STATES.Rotozooming,
@@ -64,12 +54,7 @@ function multiTouch(element: HTMLElement) : void {
                 eventName: ["touchstart"],
                 useCapture: false,
                 action: (evt : TouchEvent) : boolean => {
-                    let touch = evt.changedTouches.item(0);
-                    pointerId_2 = touch.identifier;
-                    // Get point coordinate with respect to element
-                    originalMatrix    = transfo.getMatrixFromElement( element );
-                    Pt2_coord_parent  = transfo.getPoint(touch.pageX, touch.pageY);
-                    Pt2_coord_element = Pt2_coord_parent.matrixTransform( originalMatrix.inverse() );
+                    // To be completed
                     return true;
                 }
             },
@@ -80,20 +65,8 @@ function multiTouch(element: HTMLElement) : void {
                 action: (evt : TouchEvent) : boolean => {
                     evt.preventDefault();
                     evt.stopPropagation();
-                    let touch = getRelevantDataFromEvent(evt);
-                    if(touch) {
-                        if(touch.identifier === pointerId_1) {
-                            Pt1_coord_parent.x = touch.clientX;
-                            Pt1_coord_parent.y = touch.clientY;
-                        } else {
-                            Pt2_coord_parent.x = touch.clientX;
-                            Pt2_coord_parent.y = touch.clientY;
-                        }
-                        transfo.rotozoom( element, originalMatrix
-                                        , Pt1_coord_element, Pt1_coord_parent
-                                        , Pt2_coord_element, Pt2_coord_parent );
-                    }
-                    return touch !== null;
+                    // To be completed
+                    return true;
                 }
             },
             { from: MT_STATES.Rotozooming,
@@ -103,16 +76,8 @@ function multiTouch(element: HTMLElement) : void {
                 useCapture: true,
                 action: (evt : TouchEvent) : boolean => {
                     let touch = getRelevantDataFromEvent(evt);
-                    if(touch) {
-                        originalMatrix      = transfo.getMatrixFromElement(element);
-                    }
-                    if(touch.identifier === pointerId_1) {
-                        pointerId_1         = pointerId_2;
-                        Pt1_coord_element   = Pt2_coord_element;
-                    }
-                    pointerId_2         = null;
-                    Pt2_coord_element   = null;
-                    return touch !== null;
+                    // To be completed
+                    return true;
                 }
             }
         ]
