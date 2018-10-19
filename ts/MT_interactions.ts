@@ -75,7 +75,7 @@ function multiTouch(element: HTMLElement) : void {
                 eventName: ["touchend"],
                 useCapture: true,
                 action: (evt : TouchEvent) : boolean => {
-                    let touch = getRelevantDataFromEvent(evt);
+                    const touch = getRelevantDataFromEvent(evt);
                     // To be completed
                     return true;
                 }

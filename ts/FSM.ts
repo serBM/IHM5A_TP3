@@ -19,8 +19,8 @@ class Transition {
     constructor ( fsm: FSM
                 , private fromState: State, private toState: State
                 , private eventTarget: EventTarget[], private eventNames: string[], private useCapture: boolean
-                , private action : (evt?: Event, t?: Transition) => void ) {
-        fromState.addTransitionFrom( this );
+                , private action : (evt?: Event, t?: Transition) => boolean ) {
+        this.fromState.addTransitionFrom( this );
         this.cb = (evt: Event) => {
             if( this.action(evt, this) ) {
                 fsm.setCurrentState(this.toState);
@@ -67,7 +67,7 @@ export class FSM {
         this.setCurrentState( null );
     }
     setCurrentState(state?: State) : this {
-        let changeState : boolean = this.currentState !== state;
+        const changeState : boolean = this.currentState !== state;
         if(this.currentState && changeState) {this.currentState.disable();}
         this.currentState = state || this.currentState;
         if(this.currentState && changeState) {this.currentState.enable ();}
