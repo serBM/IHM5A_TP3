@@ -1,8 +1,8 @@
 .multiTouchCopntainer img, .multiTouchCopntainer video {
-    border			: solid black 3px;
-    border-radius	: 1em;
+    /* border			: solid black 1px; */
+    border-radius	: 0.5em;
     position		: absolute;
-    top				: 0px;
+    top				: 150px;
     left			: 0px;
     transform-origin: top left;
     transform: matrix(1, 0, 0, 1, 0, 0);
@@ -10,4 +10,7 @@
 
 html, body {
     overflow		: hidden;
+}
+img{
+    max-width: 90%;
 }

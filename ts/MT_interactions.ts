@@ -1,6 +1,7 @@
 import { FSM } from "./FSM";
 import { getMatrixFromElement, getPoint, drag } from "./transfo";
 
+let lastIndex=0;
 function multiTouch(element: HTMLElement): void {
     let pointerId_1: number, Pt1_coord_element: SVGPoint, Pt1_coord_parent: SVGPoint,
         pointerId_2: number, Pt2_coord_element: SVGPoint, Pt2_coord_parent: SVGPoint,
@@ -27,7 +28,8 @@ function multiTouch(element: HTMLElement): void {
                 action: (evt: TouchEvent): boolean => {
                     pointerId_1 = 0;
                     pointerId_2 = 1;
-
+                    lastIndex++;
+                    element.style.zIndex=lastIndex+"";
                     let touch: Touch = getRelevantDataFromEvent(evt); //on stock dans touch les informations (coord) du click 
 
                     originalMatrix = getMatrixFromElement(element); //on recupère la matrice associée à l'image/element selectionné sur la page
