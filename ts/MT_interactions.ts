@@ -2,6 +2,7 @@ import { FSM } from "./FSM";
 import { getMatrixFromElement, getPoint, drag } from "./transfo";
 
 let lastIndex=0;
+let anySelected = false;
 function multiTouch(element: HTMLElement): void {
     let pointerId_1: number, Pt1_coord_element: SVGPoint, Pt1_coord_parent: SVGPoint,
         pointerId_2: number, Pt2_coord_element: SVGPoint, Pt2_coord_parent: SVGPoint,
@@ -26,18 +27,21 @@ function multiTouch(element: HTMLElement): void {
                 eventName: ["touchstart"],
                 useCapture: false,
                 action: (evt: TouchEvent): boolean => {
-                    pointerId_1 = 0;
-                    pointerId_2 = 1;
-                    lastIndex++;
-                    element.style.zIndex=lastIndex+"";
-                    let touch: Touch = getRelevantDataFromEvent(evt); //on stock dans touch les informations (coord) du click 
-
-                    originalMatrix = getMatrixFromElement(element); //on recupère la matrice associée à l'image/element selectionné sur la page
-
-                    Pt1_coord_element = getPoint(touch.pageX, touch.pageY).matrixTransform(originalMatrix.inverse()); //on stock dans coord_element les coordonnées relative du click dans l'image/l'element
-                    Pt1_coord_parent = getPoint(touch.pageX, touch.pageY); //on stock dans cette variable les coordonnées absolue du click sur la page
-
-                    return true;
+                    if (!anySelected) {
+                        anySelected=true;
+                        pointerId_1 = 0;
+                        pointerId_2 = 1;
+                        lastIndex++;
+                        element.style.zIndex=lastIndex+"";
+                        let touch: Touch = getRelevantDataFromEvent(evt); //on stock dans touch les informations (coord) du click 
+    
+                        originalMatrix = getMatrixFromElement(element); //on recupère la matrice associée à l'image/element selectionné sur la page
+    
+                        Pt1_coord_element = getPoint(touch.pageX, touch.pageY).matrixTransform(originalMatrix.inverse()); //on stock dans coord_element les coordonnées relative du click dans l'image/l'element
+                        Pt1_coord_parent = getPoint(touch.pageX, touch.pageY); //on stock dans cette variable les coordonnées absolue du click sur la page
+    
+                        return true;
+                    }
                 }
             },
             {
@@ -63,6 +67,7 @@ function multiTouch(element: HTMLElement): void {
                 eventName: ["touchend"],
                 useCapture: true,
                 action: (evt: TouchEvent): boolean => {
+                    anySelected = false;
                     return true;  //il n'y a rien à faire lorsque que arrete de drag un element
                 }
             },
