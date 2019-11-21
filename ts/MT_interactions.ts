@@ -1,7 +1,7 @@
 import { FSM } from "./FSM";
-import { getMatrixFromElement, getPoint, drag } from "./transfo";
+import { getMatrixFromElement, getPoint, drag, rotozoom } from "./transfo";
 
-let lastIndex=0;
+let lastIndex = 0;
 let anySelected = false;
 function multiTouch(element: HTMLElement): void {
     let pointerId_1: number, Pt1_coord_element: SVGPoint, Pt1_coord_parent: SVGPoint,
@@ -27,19 +27,19 @@ function multiTouch(element: HTMLElement): void {
                 eventName: ["touchstart"],
                 useCapture: false,
                 action: (evt: TouchEvent): boolean => {
-                    if (!anySelected) {
-                        anySelected=true;
+                    if (!anySelected) { //Pour eviter de deplacer 2 images à la fois lors du multitouch
+                        anySelected = true;
                         pointerId_1 = 0;
                         pointerId_2 = 1;
-                        lastIndex++;
-                        element.style.zIndex=lastIndex+"";
+                        lastIndex++; //pour faire passer au premier plan l'image qui est en train d'etre deplacée
+                        element.style.zIndex = lastIndex + "";
                         let touch: Touch = getRelevantDataFromEvent(evt); //on stock dans touch les informations (coord) du click 
-    
+
                         originalMatrix = getMatrixFromElement(element); //on recupère la matrice associée à l'image/element selectionné sur la page
-    
+
                         Pt1_coord_element = getPoint(touch.pageX, touch.pageY).matrixTransform(originalMatrix.inverse()); //on stock dans coord_element les coordonnées relative du click dans l'image/l'element
                         Pt1_coord_parent = getPoint(touch.pageX, touch.pageY); //on stock dans cette variable les coordonnées absolue du click sur la page
-    
+
                         return true;
                     }
                 }
@@ -67,7 +67,7 @@ function multiTouch(element: HTMLElement): void {
                 eventName: ["touchend"],
                 useCapture: true,
                 action: (evt: TouchEvent): boolean => {
-                    anySelected = false;
+                    anySelected = false; //on indique simplement qu'aucune image n'est en train d'etre deplacée
                     return true;  //il n'y a rien à faire lorsque que arrete de drag un element
                 }
             },
@@ -77,7 +77,13 @@ function multiTouch(element: HTMLElement): void {
                 eventName: ["touchstart"],
                 useCapture: false,
                 action: (evt: TouchEvent): boolean => {
-                    // To be completed
+                    let touch: Touch = getRelevantDataFromEvent(evt);
+
+                    Pt2_coord_element = getPoint(touch.pageX, touch.pageY).matrixTransform(originalMatrix.inverse());
+                    Pt2_coord_parent = getPoint(touch.pageX, touch.pageY);
+
+                    console.log("PRESSED 2");
+
                     return true;
                 }
             },
@@ -87,9 +93,22 @@ function multiTouch(element: HTMLElement): void {
                 eventName: ["touchmove"],
                 useCapture: true,
                 action: (evt: TouchEvent): boolean => {
-                    evt.preventDefault();
                     evt.stopPropagation();
-                    // To be completed
+
+                    let touch: Touch = getRelevantDataFromEvent(evt);
+
+                    if (touch.identifier === pointerId_1) {
+                        Pt1_coord_parent = getPoint(touch.pageX, touch.pageY);
+                    }
+
+                    if (touch.identifier === pointerId_2) {
+                        Pt2_coord_parent = getPoint(touch.pageX, touch.pageY);
+                    }
+
+                    console.log("DRAG 2");
+
+                    rotozoom(element, Pt1_coord_element, Pt1_coord_parent, Pt2_coord_element, Pt2_coord_parent);
+
                     return true;
                 }
             },
@@ -100,8 +119,18 @@ function multiTouch(element: HTMLElement): void {
                 eventName: ["touchend"],
                 useCapture: true,
                 action: (evt: TouchEvent): boolean => {
-                    const touch = getRelevantDataFromEvent(evt);
-                    // To be completed
+                    const touch: Touch = getRelevantDataFromEvent(evt);
+                    
+                    originalMatrix = getMatrixFromElement(element);
+
+                    if (touch.identifier === pointerId_1) {
+                        Pt1_coord_element = Pt2_coord_element;
+                    }
+
+                    Pt1_coord_parent = getPoint(touch.pageX, touch.pageY);
+
+                    console.log("PRESSED 1");
+
                     return true;
                 }
             }
